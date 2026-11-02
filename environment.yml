@@ -1,0 +1,33 @@
+# Reproducible development environment for Motion Planning Playground.
+#
+# Create it inside the project directory (keeps everything self-contained):
+#   conda env create --prefix ./.conda --file environment.yml
+#   conda activate ./.conda
+#
+# Update an existing environment after dependency changes:
+#   conda env update --prefix ./.conda --file environment.yml --prune
+name: mpplay
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pip
+  # runtime
+  - numpy>=1.24
+  - fastapi>=0.110
+  - pydantic>=2.0
+  - uvicorn>=0.29
+  # optional plotting (CLI --plot, examples)
+  - matplotlib>=3.7
+  # development
+  - pytest>=8.0
+  - pytest-cov>=5.0
+  - httpx>=0.27
+  - ruff>=0.6
+  - mypy>=1.10
+  - pre-commit>=3.7
+  - pip:
+      # Editable install of the package itself; all dependencies above are
+      # already satisfied by conda, so pip only links the source tree.
+      - --editable .

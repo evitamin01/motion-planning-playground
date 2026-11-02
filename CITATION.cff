@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use Motion Planning Playground in teaching or research, please cite it as below."
+title: "Motion Planning Playground"
+abstract: >-
+  An interactive, extensible platform for exploring, visualizing and comparing
+  2D motion planning algorithms.
+type: software
+authors:
+  - alias: Vitamin
+version: 0.1.0
+date-released: 2026-11-01
+license: MIT
+repository-code: "https://github.com/evitamin01/motion-planning-playground"
+keywords:
+  - motion planning
+  - path planning
+  - robotics
+  - visualization
+  - education

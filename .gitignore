@@ -1,0 +1,32 @@
+# Project-local conda environment
+.conda/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Benchmark / CLI outputs
+/results/
+*.mpplay.json
+
+# Editors & OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Local agent/editor settings (launch.json is shared on purpose)
+.claude/settings.local.json

@@ -1,0 +1,29 @@
+name: New planner or scenario
+description: Propose an algorithm or scenario to add
+labels: [planner]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Algorithm or scenario
+      placeholder: e.g. Jump Point Search
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What would users learn from it?
+      description: Which property or trade-off would it make visible?
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: References
+      description: Papers, textbooks or reference implementations
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to implement this myself

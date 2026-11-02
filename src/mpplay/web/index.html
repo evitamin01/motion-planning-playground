@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Motion Planning Playground</title>
+    <meta
+      name="description"
+      content="Explore, visualize and compare 2D motion planning algorithms interactively."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/app.css" />
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        const t = localStorage.getItem("mpplay:theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="brand">
+          <img src="favicon.svg" alt="" width="26" height="26" />
+          <span class="brand-name">Motion Planning Playground</span>
+          <span class="brand-version" id="version"></span>
+        </div>
+        <div class="topbar-group">
+          <label class="inline-field" title="Load a built-in scenario">
+            <span>Scenario</span>
+            <select id="scenario-select"></select>
+          </label>
+          <button class="btn" id="btn-generate" title="Generate a random environment">
+            <span data-icon="dice"></span><span class="label">Generate</span>
+          </button>
+          <span class="divider"></span>
+          <button class="btn icon" id="btn-undo" title="Undo (Ctrl+Z)" data-icon="undo"></button>
+          <button class="btn icon" id="btn-redo" title="Redo (Ctrl+Shift+Z)" data-icon="redo"></button>
+          <span class="divider"></span>
+          <button class="btn icon" id="btn-import" title="Open an environment or result JSON file" data-icon="upload"></button>
+          <button class="btn icon" id="btn-export" title="Save the environment as JSON" data-icon="download"></button>
+          <button class="btn icon" id="btn-snapshot" title="Save the view as PNG" data-icon="image"></button>
+        </div>
+        <div class="topbar-group end">
+          <button class="btn icon" id="btn-help" title="Help and keyboard shortcuts (?)" data-icon="help"></button>
+          <button class="btn icon" id="btn-theme" title="Toggle light/dark theme" data-icon="contrast"></button>
+          <a
+            class="btn icon"
+            href="https://github.com/evitamin01/motion-planning-playground"
+            target="_blank"
+            rel="noopener"
+            title="Source code on GitHub"
+            data-icon="github"
+          ></a>
+        </div>
+      </header>
+
+      <aside class="sidebar left" aria-label="Environment and planners">
+        <section class="panel" id="panel-env">
+          <h2 class="panel-title">Environment</h2>
+          <div class="toolbox" id="toolbox" role="toolbar" aria-label="Editing tools"></div>
+          <p class="hint" id="tool-hint"></p>
+          <div id="selection-props"></div>
+          <details class="subsection" id="env-settings">
+            <summary>World settings</summary>
+            <div class="form-grid" id="env-form"></div>
+          </details>
+        </section>
+        <section class="panel grow" id="panel-runs">
+          <div class="panel-head">
+            <h2 class="panel-title">Planners</h2>
+            <button class="btn small" id="btn-add-run" title="Add a planner to compare">
+              <span data-icon="plus"></span><span>Add</span>
+            </button>
+          </div>
+          <div id="runs" class="runs"></div>
+        </section>
+      </aside>
+
+      <main class="stage">
+        <div class="stage-toolbar">
+          <button class="btn primary" id="btn-plan" title="Run all enabled planners (Enter)">
+            <span data-icon="play"></span><span>Plan</span>
+          </button>
+          <label class="inline-field" title="Random seed used by sampling-based planners">
+            <span>Seed</span>
+            <input type="number" id="seed" min="0" step="1" value="1" />
+          </label>
+          <button class="btn icon" id="btn-reseed" title="New random seed and re-plan" data-icon="dice"></button>
+          <label class="switch" title="Re-plan automatically whenever the environment or a planner changes">
+            <input type="checkbox" id="live" />
+            <span class="switch-track"></span>
+            <span>Live</span>
+          </label>
+          <span class="spacer"></span>
+          <div class="segmented" id="view-mode" role="radiogroup" aria-label="View mode">
+            <button data-mode="split" role="radio" title="One panel per planner">Split</button>
+            <button data-mode="overlay" role="radio" title="All paths on one map">Overlay</button>
+          </div>
+          <div class="dropdown" id="layers-menu">
+            <button class="btn" id="btn-layers" title="Choose visible layers">
+              <span data-icon="layers"></span><span class="label">Layers</span>
+            </button>
+            <div class="dropdown-panel" id="layers-panel"></div>
+          </div>
+          <button class="btn icon" id="btn-fit" title="Fit the map to the view (F)" data-icon="fit"></button>
+        </div>
+        <div class="views" id="views"></div>
+        <div class="playbar" id="playbar">
+          <div class="playbar-buttons">
+            <button class="btn icon" id="pb-restart" title="Restart (Home)" data-icon="restart"></button>
+            <button class="btn icon" id="pb-back" title="Step back (←)" data-icon="step-back"></button>
+            <button class="btn icon primary round" id="pb-play" title="Play / pause (Space)" data-icon="play"></button>
+            <button class="btn icon" id="pb-forward" title="Step forward (→)" data-icon="step-forward"></button>
+            <button class="btn icon" id="pb-end" title="Jump to the end (End)" data-icon="skip"></button>
+          </div>
+          <input type="range" id="pb-timeline" min="0" max="0" value="0" aria-label="Timeline" />
+          <span class="pb-counter" id="pb-counter">0 / 0</span>
+          <label class="inline-field compact" title="Playback speed in steps per second">
+            <span data-icon="gauge"></span>
+            <select id="pb-speed"></select>
+          </label>
+          <label class="inline-field compact" title="How runs with different numbers of steps are synchronized">
+            <span>Sync</span>
+            <select id="pb-sync">
+              <option value="steps">by step</option>
+              <option value="progress">by progress</option>
+            </select>
+          </label>
+        </div>
+      </main>
+
+      <aside class="sidebar right" aria-label="Results">
+        <nav class="tabs" role="tablist" id="tabs">
+          <button role="tab" data-tab="metrics">Metrics</button>
+          <button role="tab" data-tab="charts">Charts</button>
+          <button role="tab" data-tab="benchmark">Benchmark</button>
+          <button role="tab" data-tab="learn">Learn</button>
+        </nav>
+        <div class="tab-panel" data-panel="metrics" id="tab-metrics"></div>
+        <div class="tab-panel" data-panel="charts" id="tab-charts"></div>
+        <div class="tab-panel" data-panel="benchmark" id="tab-benchmark"></div>
+        <div class="tab-panel" data-panel="learn" id="tab-learn"></div>
+      </aside>
+    </div>
+
+    <dialog id="dlg-generate" class="dialog">
+      <form method="dialog" class="dialog-body" id="generate-form">
+        <h2>Generate environment</h2>
+        <div class="form-grid" id="generate-fields"></div>
+        <div class="dialog-actions">
+          <button class="btn" value="cancel" formnovalidate>Cancel</button>
+          <button class="btn primary" value="ok" id="generate-ok">Generate</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="dlg-help" class="dialog wide">
+      <div class="dialog-body" id="help-body"></div>
+    </dialog>
+
+    <div class="toast-stack" id="toasts" aria-live="polite"></div>
+    <input type="file" id="file-input" accept=".json,application/json" hidden />
+  </body>
+</html>
