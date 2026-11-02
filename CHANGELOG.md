@@ -6,6 +6,15 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+### Changed
+
+- The README roadmap is now a checklist of completed and open work, grouped into
+  *Next up*, *Planned* and *Ideas*, with good first issues marked.
+
+### Fixed
+
+- The README listed seven curated scenarios; there are eight.
+
 ## [0.1.0] - 2026-11-01
 
 First public release.

@@ -22,7 +22,7 @@ hackable test bed for your own planner.
 ## Highlights
 
 - **Interactive world editor.** Draw rectangles, circles and polygons; drag, resize and
-  rotate them; move the start and goal; undo and redo. Seven curated scenarios (bug trap,
+  rotate them; move the start and goal; undo and redo. Eight curated scenarios (bug trap,
   narrow passages, maze, office, ...) and random maze, forest and shape generators.
 - **11 algorithms in three families.** BFS, Dijkstra, A\* / Weighted A\*, Greedy
   Best-First and Theta\* on grids; RRT, RRT-Connect, RRT\*, Informed RRT\* and PRM in
@@ -201,13 +201,41 @@ docs/                           guides and reference
 
 ## Roadmap
 
-Ideas that fit the architecture well (contributions welcome):
+The project is in active development. Contributions are welcome; items marked
+*good first issue* are self-contained and a nice way to get to know the codebase.
 
-- Non-holonomic robots (Dubins / Reeds-Shepp) and Hybrid A\*
-- Dynamic replanning (D\* Lite, LPA\*) with obstacles that move during playback
-- More planners: Jump Point Search, BIT\*, FMT\*, Lazy PRM, visibility graphs
-- Path smoothing beyond shortcutting (B-splines, elastic bands) and trajectory timing
-- A zero-install static demo that runs the Python core in the browser via Pyodide
+**Foundations (v0.1)**
+
+- [x] Shared world model with exact collision checking for disc robots and conservative
+      grid rasterization
+- [x] Grid search: BFS, Dijkstra, A\* / Weighted A\*, Greedy Best-First, Theta\*
+- [x] Sampling-based planning: RRT, RRT-Connect, RRT\*, Informed RRT\*, PRM
+- [x] Artificial potential fields with random-walk escapes
+- [x] Search traces with synchronized step-by-step playback in split and overlay views
+- [x] Interactive world editor, eight curated scenarios and random generators
+- [x] Metrics, convergence charts and multi-seed benchmarks with CSV export
+- [x] Planner plugin API with an example plugin (EST)
+- [x] `mpplay` CLI, Python API and HTTP API
+
+**Next up**
+
+- [ ] Jump Point Search on the grid planners *(good first issue)*
+- [ ] Visibility-graph planner for polygonal worlds *(good first issue)*
+- [ ] Lazy PRM, with deferred edge checks shown in the trace
+- [ ] A zero-install static demo that runs the Python core in the browser via Pyodide
+
+**Planned**
+
+- [ ] Non-holonomic robots (Dubins / Reeds-Shepp curves) and Hybrid A\*
+- [ ] Dynamic replanning (D\* Lite, LPA\*) with obstacles that move during playback
+- [ ] Asymptotically optimal batch planners: BIT\* and FMT\*
+- [ ] Path smoothing beyond shortcutting (B-splines, elastic bands) and trajectory timing
+
+**Ideas**
+
+- [ ] Robot shapes beyond discs (rotating rectangles and polygons, SE(2) planning)
+- [ ] Guided exercises in the Learn tab ("predict where RRT\* rewires next")
+- [ ] Reproducible benchmark reports that can be shared as a single link or file
 
 ## Contributing
 
